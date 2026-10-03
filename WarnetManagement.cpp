@@ -1,76 +1,198 @@
 #include <iostream>
 using namespace std;
 
-struct customer
-{
-    string name;
-    bool isRent;
-    int pcId;
+struct Komputer {
+    string nama;
+    bool digunakan;
+    string pelanggan;
+    int durasi;
 };
 
-int main()
-{
+// Menampilkan daftar komputer
+void daftarKomputer(Komputer pc[], int jumlah) {
+
+    cout << "\n--- DAFTAR KOMPUTER ---\n";
+
+    for (int i = 0; i < jumlah; i++) {
+
+        cout << i + 1 << ". " << pc[i].nama << " - ";
+
+        if (pc[i].digunakan) {
+            cout << "Digunakan";
+        } else {
+            cout << "Tersedia";
+        }
+
+        cout << endl;
+    }
+}
+
+// Memulai penggunaan komputer
+void mulai(Komputer pc[], int jumlah) {
+
     int pilihan;
-    string back;
 
-    // list nama pc
-    string namePc[4] = {"PC-01", "PC-02", "PC-03", "PC-04"};
+    daftarKomputer(pc, jumlah);
 
-    // ketika true artinya pc tersedia
-    bool statusPc[4] = {true, false, true, false};
-    do
-    {
-        cout << endl;
-        cout << "==== MENU MANAJEMEN WARNET ====" << endl;
-        cout << "== 1. Cek Daftar PC Tersedia ==" << endl;
-        cout << "===============================" << endl;
+    cout << "\nPilih PC: ";
+    cin >> pilihan;
+    pilihan--;
 
-        cout << "pilih menu (1-5) = ";
+    if (pilihan < 0 || pilihan >= jumlah) {
+        cout << "PC tidak tersedia.\n";
+        return;
+    }
+
+    if (pc[pilihan].digunakan) {
+        cout << "PC sedang digunakan.\n";
+        return;
+    }
+
+    cout << "Nama pelanggan: ";
+    cin >> pc[pilihan].pelanggan;
+
+    cout << "Durasi (jam): ";
+    cin >> pc[pilihan].durasi;
+
+    pc[pilihan].digunakan = true;
+
+    cout << "\nPenggunaan dimulai.\n";
+}
+
+// Mengakhiri penggunaan komputer
+int selesai(Komputer pc[], int jumlah) {
+
+    int pilihan;
+    int harga = 5000;
+
+    daftarKomputer(pc, jumlah);
+
+    cout << "\nPilih PC: ";
+    cin >> pilihan;
+    pilihan--;
+
+    if (pilihan < 0 || pilihan >= jumlah) {
+        cout << "PC tidak tersedia.\n";
+        return 0;
+    }
+
+    if (!pc[pilihan].digunakan) {
+        cout << "PC tidak sedang digunakan.\n";
+        return 0;
+    }
+
+    int total = pc[pilihan].durasi * harga;
+
+    cout << "\n--- PEMBAYARAN ---\n";
+    cout << "Pelanggan : " << pc[pilihan].pelanggan << endl;
+    cout << "Durasi    : " << pc[pilihan].durasi << " jam\n";
+    cout << "Total     : Rp" << total << endl;
+
+    pc[pilihan].digunakan = false;
+
+    return total;
+}
+
+// Menampilkan pelanggan yang sedang menggunakan PC
+void pelanggan(Komputer pc[], int jumlah) {
+
+    cout << "\n--- PELANGGAN AKTIF ---\n";
+
+    bool ada = false;
+
+    for (int i = 0; i < jumlah; i++) {
+
+        if (pc[i].digunakan) {
+
+            int total = pc[i].durasi * 5000;
+
+            cout << pc[i].nama
+                 << " | " << pc[i].pelanggan
+                 << " | " << pc[i].durasi << " jam"
+                 << " | Rp" << total << endl;
+
+            ada = true;
+        }
+    }
+
+    if (!ada) {
+        cout << "Tidak ada pelanggan aktif.\n";
+    }
+}
+
+int main() {
+
+    const int jumlahPC = 5;
+
+    Komputer pc[jumlahPC] = {
+        {"PC-01", false, "", 0},
+        {"PC-02", false, "", 0},
+        {"PC-03", false, "", 0},
+        {"PC-04", false, "", 0},
+        {"PC-05", false, "", 0}
+    };
+
+    int pilihan;
+    int pendapatan = 0;
+    char lanjut;
+
+    while (true) {
+
+        cout << "\n===== WARNET =====\n";
+        cout << "1. Daftar PC\n";
+        cout << "2. Mulai Pakai\n";
+        cout << "3. Selesai Pakai\n";
+        cout << "4. Pelanggan Aktif\n";
+        cout << "5. Pendapatan\n";
+        cout << "6. Keluar\n";
+        cout << "Pilih: ";
         cin >> pilihan;
-        cout << endl;
 
-        if (pilihan == 1)
-        {
-            for (int i = 0; i < 4; i++)
-            {
+        if (pilihan == 1) {
 
-                cout << namePc[i];
-                cout << " - ";
-                for (int j = 0; j < 1; j++)
-                {
-                    if (statusPc[i] == true)
-                    {
-                        cout << "tersedia";
-                    }
-                    else
-                    {
-                        cout << "tidak tersedia";
-                    }
-                }
-                cout << endl;
-            }
-            cout << endl;
-            cout << "lanjut? (Y) = ";
-            cin >> back;
+            daftarKomputer(pc, jumlahPC);
+
         }
-        else
-        {
-            cout << "pilihan tidak tersedia !" << endl;
-            cout << "ingin kembali ke menu awal? (Y/N) = ";
-            cin >> back;
+        else if (pilihan == 2) {
+
+            mulai(pc, jumlahPC);
+
         }
-    } while (back == "Y" || back == "y");
-    cout << "terimakasih telah menggunakan layanan kami!";
-    return 0;
+        else if (pilihan == 3) {
 
-    // customer cst1;
+            pendapatan += selesai(pc, jumlahPC);
 
-    // cst1.name = "Zidan";
-    // cst1.isRent = true;
-    // cst1.pcId = 1;
+        }
+        else if (pilihan == 4) {
 
-    // cout << cst1.name << "\n";
-    // cout << cst1.isRent << "\n";
-    // cout << cst1.pcId << "\n";
+            pelanggan(pc, jumlahPC);
+
+        }
+        else if (pilihan == 5) {
+
+            cout << "\nPendapatan: Rp" << pendapatan << endl;
+
+        }
+        else if (pilihan == 6) {
+
+            cout << "\nProgram selesai.\n";
+            break;
+
+        }
+        else {
+
+            cout << "Pilihan tidak tersedia.\n";
+        }
+
+        // Pilihan setelah menjalankan menu
+        cout << "\nKembali ke menu? (y/n): ";
+        cin >> lanjut;
+
+        if (lanjut == 'n' || lanjut == 'N') {
+            cout << "Program selesai.\n";
+            break;
+        }
+    }
+
     return 0;
 }
